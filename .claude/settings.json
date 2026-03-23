@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.command' | grep -qE 'swift (build|test)' && swiftformat /Users/ch3cooh/works/AppCoreKit/Sources /Users/ch3cooh/works/AppCoreKit/Tests --swiftversion 6.0 2>/dev/null || true",
+            "statusMessage": "Running SwiftFormat..."
+          }
+        ]
+      }
+    ]
+  }
+}
