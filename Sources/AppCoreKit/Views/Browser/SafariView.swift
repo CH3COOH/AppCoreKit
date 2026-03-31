@@ -15,7 +15,11 @@ struct SafariView: UIViewControllerRepresentable {
     let url: URL
 
     func makeUIViewController(context: Context) -> SFSafariViewController {
-        SFSafariViewController(url: url)
+        let vc = SFSafariViewController(url: url)
+        if #unavailable(iOS 26) {
+            vc.preferredControlTintColor = UIColor(Color.accentColor)
+        }
+        return vc
     }
 
     func updateUIViewController(_ uiViewController: SFSafariViewController, context: Context) {}

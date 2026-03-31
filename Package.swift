@@ -13,9 +13,15 @@ let package = Package(
             targets: ["AppCoreKit"]
         ),
     ],
+    dependencies: [
+        .package(url: "https://github.com/RevenueCat/purchases-ios-spm.git", from: "5.0.0"),
+    ],
     targets: [
         .target(
-            name: "AppCoreKit"
+            name: "AppCoreKit",
+            dependencies: [
+                .product(name: "RevenueCat", package: "purchases-ios-spm"),
+            ]
         ),
         .testTarget(
             name: "AppCoreKitTests",
