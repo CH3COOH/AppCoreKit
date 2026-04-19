@@ -19,8 +19,8 @@ public struct VersionInformationScreen: View {
     private let isPremium: Bool
     private let subscribeButtonTitle: Text
     private let closeButtonTitle: Text
-    private let onSubscribeTapped: () -> Void
-    private let onCloseTapped: () -> Void
+    private let onSubscribeTapped: (() -> Void)?
+    private let onCloseTapped: (() -> Void)?
 
     public init(
         navigationTitle: String,
@@ -29,11 +29,11 @@ public struct VersionInformationScreen: View {
         descText: String,
         updateText: String,
         isLoaded: Bool,
-        isPremium: Bool,
-        subscribeButtonTitle: Text,
-        closeButtonTitle: Text,
-        onSubscribeTapped: @escaping () -> Void,
-        onCloseTapped: @escaping () -> Void
+        isPremium: Bool = false,
+        subscribeButtonTitle: Text = Text(""),
+        closeButtonTitle: Text = Text(""),
+        onSubscribeTapped: (() -> Void)? = nil,
+        onCloseTapped: (() -> Void)? = nil,
     ) {
         self.navigationTitle = navigationTitle
         self.appName = appName
@@ -48,7 +48,8 @@ public struct VersionInformationScreen: View {
         self.onCloseTapped = onCloseTapped
     }
 
-    public var body: some View {
+    @ViewBuilder
+    private var mainContent: some View {
         ZStack {
             if isLoaded {
                 VStack(spacing: 0) {
@@ -70,15 +71,6 @@ public struct VersionInformationScreen: View {
                 LoadingView()
             }
         }
-        .safeAreaBarCompat(edge: .bottom, showsDivider: true) {
-            VersionInformationFooterView(
-                isPremium: isPremium,
-                subscribeButtonTitle: subscribeButtonTitle,
-                closeButtonTitle: closeButtonTitle,
-                onSubscribeTapped: onSubscribeTapped,
-                onCloseTapped: onCloseTapped
-            )
-        }
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
@@ -99,6 +91,23 @@ public struct VersionInformationScreen: View {
                         .multilineTextAlignment(.leading)
                 }
             }
+        }
+    }
+
+    public var body: some View {
+        if let onCloseTapped {
+            mainContent
+                .safeAreaBarCompat(edge: .bottom, showsDivider: true) {
+                    VersionInformationFooterView(
+                        isPremium: isPremium,
+                        subscribeButtonTitle: subscribeButtonTitle,
+                        closeButtonTitle: closeButtonTitle,
+                        onSubscribeTapped: onSubscribeTapped ?? {},
+                        onCloseTapped: onCloseTapped,
+                    )
+                }
+        } else {
+            mainContent
         }
     }
 }

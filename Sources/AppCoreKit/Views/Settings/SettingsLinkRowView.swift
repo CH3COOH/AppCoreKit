@@ -10,11 +10,21 @@
 import SwiftUI
 
 struct SettingsLinkRowView: View {
+    private let iconSystemName: String?
+    private let iconColor: Color?
     private let title: Text
     private let description: Text?
     private let action: () -> Void
 
-    init(title: Text, description: Text? = nil, action: @escaping () -> Void) {
+    init(
+        iconSystemName: String? = nil,
+        iconColor: Color? = nil,
+        title: Text,
+        description: Text? = nil,
+        action: @escaping () -> Void,
+    ) {
+        self.iconSystemName = iconSystemName
+        self.iconColor = iconColor
         self.title = title
         self.description = description
         self.action = action
@@ -22,7 +32,17 @@ struct SettingsLinkRowView: View {
 
     var body: some View {
         Button(action: action) {
-            HStack {
+            HStack(spacing: 16) {
+                if let iconSystemName, let iconColor {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 6.5)
+                            .fill(iconColor)
+                            .frame(width: 29, height: 29)
+                        Image(systemName: iconSystemName)
+                            .font(.system(size: 17))
+                            .foregroundStyle(.white)
+                    }
+                }
                 VStack(alignment: .leading, spacing: 2) {
                     title
                         .foregroundStyle(Color.primary)
@@ -37,6 +57,7 @@ struct SettingsLinkRowView: View {
                     .foregroundStyle(Color.secondary)
                     .font(.system(size: 13, weight: .semibold))
             }
+            .padding(.vertical, 4)
         }
     }
 }
