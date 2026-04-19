@@ -21,6 +21,8 @@ public struct SettingsAboutScreen: View {
     private let privacyPolicyURL: URL?
     private let termsOfUseURL: URL?
     private let developerURL: URL?
+    private let versionHistoryTitle: String?
+    private let versionHistoryDestination: AnyView?
     private let onAppear: (() -> Void)?
 
     @State private var selectedURL: IdentifiableURL?
@@ -42,7 +44,9 @@ public struct SettingsAboutScreen: View {
         privacyPolicyURL: URL? = nil,
         termsOfUseURL: URL? = nil,
         developerURL: URL? = nil,
-        onAppear: (() -> Void)? = nil
+        versionHistoryTitle: String? = nil,
+        versionHistoryDestination: AnyView? = nil,
+        onAppear: (() -> Void)? = nil,
     ) {
         self.navigationTitle = navigationTitle
         self.appIconImage = appIconImage
@@ -55,6 +59,8 @@ public struct SettingsAboutScreen: View {
         self.privacyPolicyURL = privacyPolicyURL
         self.termsOfUseURL = termsOfUseURL
         self.developerURL = developerURL
+        self.versionHistoryTitle = versionHistoryTitle
+        self.versionHistoryDestination = versionHistoryDestination
         self.onAppear = onAppear
     }
 
@@ -82,14 +88,45 @@ public struct SettingsAboutScreen: View {
                 }
             }
 
+            if let title = versionHistoryTitle, let destination = versionHistoryDestination {
+                Section {
+                    NavigationLink {
+                        destination
+                    } label: {
+                        HStack(spacing: 16) {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 6.5)
+                                    .fill(SettingsIconColor.system)
+                                    .frame(width: 29, height: 29)
+                                Image(systemName: "clock.arrow.circlepath")
+                                    .font(.system(size: 17))
+                                    .foregroundStyle(.white)
+                            }
+                            Text(title)
+                                .foregroundStyle(Color.primary)
+                            Spacer(minLength: 0)
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
+            }
+
             Section {
                 if let url = privacyPolicyURL {
-                    SettingsLinkRowView(title: privacyPolicyTitle, description: nil) {
+                    SettingsLinkRowView(
+                        iconSystemName: "hand.raised.fill",
+                        iconColor: SettingsIconColor.info,
+                        title: privacyPolicyTitle,
+                    ) {
                         selectedURL = IdentifiableURL(url: url)
                     }
                 }
                 if let url = termsOfUseURL {
-                    SettingsLinkRowView(title: termsOfUseTitle, description: nil) {
+                    SettingsLinkRowView(
+                        iconSystemName: "doc.text.fill",
+                        iconColor: SettingsIconColor.info,
+                        title: termsOfUseTitle,
+                    ) {
                         selectedURL = IdentifiableURL(url: url)
                     }
                 }
@@ -97,7 +134,12 @@ public struct SettingsAboutScreen: View {
 
             Section {
                 if let url = developerURL {
-                    SettingsLinkRowView(title: developerTitle, description: developerDescription) {
+                    SettingsLinkRowView(
+                        iconSystemName: "globe",
+                        iconColor: SettingsIconColor.info,
+                        title: developerTitle,
+                        description: developerDescription,
+                    ) {
                         selectedURL = IdentifiableURL(url: url)
                     }
                 }
@@ -115,5 +157,41 @@ public struct SettingsAboutScreen: View {
         .onAppear {
             onAppear?()
         }
+    }
+}
+
+public extension SettingsAboutScreen {
+    init(
+        navigationTitle: String,
+        appIconImage: Image,
+        appName: String,
+        appVersion: String,
+        privacyPolicyTitle: Text,
+        termsOfUseTitle: Text,
+        developerTitle: Text,
+        developerDescription: Text? = nil,
+        privacyPolicyURL: URL? = nil,
+        termsOfUseURL: URL? = nil,
+        developerURL: URL? = nil,
+        versionHistoryTitle: String,
+        @ViewBuilder versionHistoryDestination: () -> some View,
+        onAppear: (() -> Void)? = nil,
+    ) {
+        self.init(
+            navigationTitle: navigationTitle,
+            appIconImage: appIconImage,
+            appName: appName,
+            appVersion: appVersion,
+            privacyPolicyTitle: privacyPolicyTitle,
+            termsOfUseTitle: termsOfUseTitle,
+            developerTitle: developerTitle,
+            developerDescription: developerDescription,
+            privacyPolicyURL: privacyPolicyURL,
+            termsOfUseURL: termsOfUseURL,
+            developerURL: developerURL,
+            versionHistoryTitle: versionHistoryTitle,
+            versionHistoryDestination: AnyView(versionHistoryDestination()),
+            onAppear: onAppear,
+        )
     }
 }
