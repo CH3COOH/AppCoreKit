@@ -49,7 +49,6 @@ struct MailComposeView: UIViewControllerRepresentable {
             error _: (any Error)?
         ) {
             MainActor.assumeIsolated {
-                controller.dismiss(animated: true)
                 onFinish(result)
             }
         }
