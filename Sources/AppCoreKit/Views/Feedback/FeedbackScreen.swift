@@ -41,7 +41,7 @@ public struct FeedbackScreen: View {
     private let onCancel: () -> Void
     private let onSent: (() -> Void)?
 
-    @State private var selectedTopicIndex: Int = 0
+    @State private var selectedTopicIndex: Int
     @State private var descriptionText: String = ""
     @State private var showMailCompose: Bool = false
     @State private var showCannotSendMailAlert: Bool = false
@@ -68,6 +68,7 @@ public struct FeedbackScreen: View {
         discardButtonTitle: Text? = nil,
         keepEditingButtonTitle: Text? = nil,
         topics: [String]? = nil,
+        initialTopic: String? = nil,
         toRecipients: [String],
         ccRecipients: [String] = [],
         deviceInfo: String? = nil,
@@ -78,6 +79,9 @@ public struct FeedbackScreen: View {
         onCancel: @escaping () -> Void,
         onSent: (() -> Void)? = nil,
     ) {
+        let resolvedTopics = topics ?? FeedbackTopic.allCases.map(\.localizedName)
+        let initialIndex = initialTopic.flatMap { resolvedTopics.firstIndex(of: $0) } ?? 0
+        _selectedTopicIndex = State(initialValue: initialIndex)
         self.navigationTitle = navigationTitle ?? LocalizedString.navigationTitle
         self.topicsSectionTitle = topicsSectionTitle ?? Text(verbatim: LocalizedString.topicsSectionTitle)
         self.topicsRowTitle = topicsRowTitle ?? Text(verbatim: LocalizedString.topicsRowTitle)
@@ -96,14 +100,7 @@ public struct FeedbackScreen: View {
         self.discardChangesMessage = discardChangesMessage ?? Text(verbatim: LocalizedString.discardChangesMessage)
         self.discardButtonTitle = discardButtonTitle ?? Text(verbatim: LocalizedString.discardButtonTitle)
         self.keepEditingButtonTitle = keepEditingButtonTitle ?? Text(verbatim: LocalizedString.keepEditingButtonTitle)
-        self.topics = topics ?? [
-            LocalizedString.topicBugReport,
-            LocalizedString.topicFeatureRequest,
-            LocalizedString.topicQuestion,
-            LocalizedString.topicBusinessInquiry,
-            LocalizedString.topicMediaPress,
-            LocalizedString.topicOther,
-        ]
+        self.topics = resolvedTopics
         self.toRecipients = toRecipients
         self.ccRecipients = ccRecipients
         self.deviceInfo = deviceInfo ?? DeviceInfoProvider.deviceModel
@@ -278,11 +275,5 @@ private enum LocalizedString {
     static let discardButtonTitle = String(localized: "feedback.discard_button", bundle: .module)
     static let keepEditingButtonTitle = String(localized: "feedback.keep_editing_button", bundle: .module)
     static let footerText = String(localized: "feedback.footer_text", bundle: .module)
-    static let topicBugReport = String(localized: "feedback.topic.bug_report", bundle: .module)
-    static let topicFeatureRequest = String(localized: "feedback.topic.feature_request", bundle: .module)
-    static let topicQuestion = String(localized: "feedback.topic.question", bundle: .module)
-    static let topicBusinessInquiry = String(localized: "feedback.topic.business_inquiry", bundle: .module)
-    static let topicMediaPress = String(localized: "feedback.topic.media_press", bundle: .module)
-    static let topicOther = String(localized: "feedback.topic.other", bundle: .module)
 }
 #endif

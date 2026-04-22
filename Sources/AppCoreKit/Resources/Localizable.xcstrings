@@ -183,7 +183,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "端末情報"
+            "value": "動作環境の情報"
           }
         },
         "ko": {
@@ -533,7 +533,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "端末"
+            "value": "デバイス"
           }
         },
         "ko": {
