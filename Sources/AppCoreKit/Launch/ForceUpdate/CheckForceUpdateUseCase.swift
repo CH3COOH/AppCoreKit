@@ -38,7 +38,7 @@ public final class CheckForceUpdateUseCase: UseCaseProtocol, @unchecked Sendable
 
     public init(
         urlSession: URLSession = .shared,
-        bundleShortVersion: String? = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+        bundleShortVersion: String? = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
     ) {
         self.urlSession = urlSession
         self.bundleShortVersion = bundleShortVersion

@@ -9,19 +9,18 @@
 
 import Foundation
 #if os(iOS)
-import DeviceKit
+    import DeviceKit
 
-enum DeviceInfoProvider {
+    enum DeviceInfoProvider {
+        static var deviceModel: String {
+            Device.current.description
+        }
 
-    static var deviceModel: String {
-        Device.current.description
+        static var osVersion: String {
+            let v = ProcessInfo.processInfo.operatingSystemVersion
+            return v.patchVersion == 0
+                ? "\(v.majorVersion).\(v.minorVersion)"
+                : "\(v.majorVersion).\(v.minorVersion).\(v.patchVersion)"
+        }
     }
-
-    static var osVersion: String {
-        let v = ProcessInfo.processInfo.operatingSystemVersion
-        return v.patchVersion == 0
-            ? "\(v.majorVersion).\(v.minorVersion)"
-            : "\(v.majorVersion).\(v.minorVersion).\(v.patchVersion)"
-    }
-}
 #endif

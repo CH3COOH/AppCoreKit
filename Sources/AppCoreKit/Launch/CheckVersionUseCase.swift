@@ -27,7 +27,7 @@ public final class CheckVersionUseCase: UseCaseProtocol, @unchecked Sendable {
     public init(
         userDefaults: UserDefaults = .standard,
         userDefaultsKey: String = "current_version",
-        bundleShortVersion: String? = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+        bundleShortVersion: String? = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
     ) {
         self.userDefaults = userDefaults
         self.userDefaultsKey = userDefaultsKey
