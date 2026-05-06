@@ -21,7 +21,7 @@ public struct VersionInformationFooterView: View {
         subscribeButtonTitle: Text,
         closeButtonTitle: Text,
         onSubscribeTapped: @escaping () -> Void,
-        onCloseTapped: @escaping () -> Void
+        onCloseTapped: @escaping () -> Void,
     ) {
         self.isPremium = isPremium
         self.subscribeButtonTitle = subscribeButtonTitle

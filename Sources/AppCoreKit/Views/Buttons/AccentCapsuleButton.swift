@@ -37,7 +37,7 @@ public struct AccentCapsuleButton: View {
         .frame(maxWidth: .infinity)
         .background(
             Capsule()
-                .fill(isGreyColor ? Color.secondary.opacity(0.6) : Color.accentColor)
+                .fill(isGreyColor ? Color.secondary.opacity(0.6) : Color.accentColor),
         )
     }
 }

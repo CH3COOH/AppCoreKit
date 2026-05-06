@@ -23,7 +23,7 @@ public struct UpdateRequirementScreen: View {
         buttonTitle: Text,
         iconName: String = "arrow.up.circle.fill",
         onOpenAppStore: @escaping () -> Void,
-        onAppear: (() -> Void)? = nil
+        onAppear: (() -> Void)? = nil,
     ) {
         self.title = title
         self.message = message
@@ -57,6 +57,6 @@ public struct UpdateRequirementScreen: View {
         message: Text("最新バージョンのアプリをご利用ください。\nApp Storeからアップデートできます。"),
         buttonTitle: Text("App Storeを開く"),
         iconName: "arrow.down.app.dashed.trianglebadge.exclamationmark",
-        onOpenAppStore: {}
+        onOpenAppStore: {},
     )
 }

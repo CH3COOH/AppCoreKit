@@ -14,7 +14,7 @@ public extension View {
     func safeAreaBarCompat(
         edge: VerticalEdge,
         showsDivider: Bool = true,
-        @ViewBuilder content: () -> some View
+        @ViewBuilder content: () -> some View,
     ) -> some View {
         if #available(iOS 26.0, macOS 26.0, *) {
             safeAreaBar(edge: edge, content: content)

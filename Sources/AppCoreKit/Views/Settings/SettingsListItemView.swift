@@ -24,7 +24,7 @@ public struct SettingsListItemView: View {
         backgroundColor: Color? = nil,
         title: Text,
         description: Text? = nil,
-        action: (() -> Void)? = nil
+        action: (() -> Void)? = nil,
     ) {
         self.image = image
         self.backgroundColor = backgroundColor

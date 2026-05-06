@@ -50,18 +50,18 @@ public struct ContentUnavailableViewCompat<LabelContent: View, DescriptionConten
 
 // MARK: - Initializers
 
-extension ContentUnavailableViewCompat where DescriptionContent == EmptyView, ActionsContent == EmptyView {
-    public init(@ViewBuilder label: () -> LabelContent) {
+public extension ContentUnavailableViewCompat where DescriptionContent == EmptyView, ActionsContent == EmptyView {
+    init(@ViewBuilder label: () -> LabelContent) {
         labelContent = label()
         descriptionContent = nil
         actionsContent = nil
     }
 }
 
-extension ContentUnavailableViewCompat where ActionsContent == EmptyView {
-    public init(
+public extension ContentUnavailableViewCompat where ActionsContent == EmptyView {
+    init(
         @ViewBuilder label: () -> LabelContent,
-        @ViewBuilder description: () -> DescriptionContent
+        @ViewBuilder description: () -> DescriptionContent,
     ) {
         labelContent = label()
         descriptionContent = description()
@@ -69,10 +69,10 @@ extension ContentUnavailableViewCompat where ActionsContent == EmptyView {
     }
 }
 
-extension ContentUnavailableViewCompat where DescriptionContent == EmptyView {
-    public init(
+public extension ContentUnavailableViewCompat where DescriptionContent == EmptyView {
+    init(
         @ViewBuilder label: () -> LabelContent,
-        @ViewBuilder actions: () -> ActionsContent
+        @ViewBuilder actions: () -> ActionsContent,
     ) {
         labelContent = label()
         descriptionContent = nil
@@ -80,11 +80,11 @@ extension ContentUnavailableViewCompat where DescriptionContent == EmptyView {
     }
 }
 
-extension ContentUnavailableViewCompat {
-    public init(
+public extension ContentUnavailableViewCompat {
+    init(
         @ViewBuilder label: () -> LabelContent,
         @ViewBuilder description: () -> DescriptionContent,
-        @ViewBuilder actions: () -> ActionsContent
+        @ViewBuilder actions: () -> ActionsContent,
     ) {
         labelContent = label()
         descriptionContent = description()
@@ -94,20 +94,20 @@ extension ContentUnavailableViewCompat {
 
 // MARK: - Preset Initializers
 
-extension ContentUnavailableViewCompat where LabelContent == Label<Text, Image>, DescriptionContent == Text, ActionsContent == EmptyView {
-    public init(title: String, systemImage: String, description: String) {
+public extension ContentUnavailableViewCompat where LabelContent == Label<Text, Image>, DescriptionContent == Text, ActionsContent == EmptyView {
+    init(title: String, systemImage: String, description: String) {
         labelContent = Label(title, systemImage: systemImage)
         descriptionContent = Text(description)
         actionsContent = nil
     }
 }
 
-extension ContentUnavailableViewCompat where LabelContent == Label<Text, Image>, DescriptionContent == Text {
-    public init(
+public extension ContentUnavailableViewCompat where LabelContent == Label<Text, Image>, DescriptionContent == Text {
+    init(
         title: String,
         systemImage: String,
         description: String,
-        @ViewBuilder actions: () -> ActionsContent
+        @ViewBuilder actions: () -> ActionsContent,
     ) {
         labelContent = Label(title, systemImage: systemImage)
         descriptionContent = Text(description)
