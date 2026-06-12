@@ -11,7 +11,7 @@
 import Testing
 
 struct CheckForceUpdateUseCaseTests {
-    struct Param: Sendable {
+    struct Param {
         let minVersion: String
         let bundleVersion: String
     }

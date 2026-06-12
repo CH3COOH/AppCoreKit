@@ -24,7 +24,7 @@ struct CheckNetworkAccessUseCaseTests {
             url: makeURL(),
             statusCode: 200,
             httpVersion: nil,
-            headerFields: nil
+            headerFields: nil,
         )!
         return (response, Data("Success".utf8))
     }
@@ -34,20 +34,20 @@ struct CheckNetworkAccessUseCaseTests {
             url: makeURL(),
             statusCode: statusCode,
             httpVersion: nil,
-            headerFields: nil
+            headerFields: nil,
         )!
         return (response, Data())
     }
 
-    @Test func Successが返る場合_successを返す() async throws {
-        MockURLProtocol.requestHandler = { _ in self.successResponse() }
+    @Test func Successが返る場合_successを返す() async {
+        MockURLProtocol.requestHandler = { _ in successResponse() }
         let useCase = CheckNetworkAccessUseCase(urlSession: .mockSession())
         let result = await useCase.execute(.init(connectivityURL: makeURL()))
         #expect(result.isSuccess)
     }
 
-    @Test func Success以外が返る場合_unexpectedResponseContentエラーを返す() async throws {
-        MockURLProtocol.requestHandler = { _ in self.failureResponse() }
+    @Test func Success以外が返る場合_unexpectedResponseContentエラーを返す() async {
+        MockURLProtocol.requestHandler = { _ in failureResponse() }
         let useCase = CheckNetworkAccessUseCase(urlSession: .mockSession())
         let result = await useCase.execute(.init(connectivityURL: makeURL()))
         guard case let .failure(error) = result else {

@@ -22,7 +22,7 @@ struct CheckVersionUseCaseTests {
     @Test func bundleVersionが取得できない場合_notUpdateを返す() async throws {
         let useCase = CheckVersionUseCase(
             userDefaults: makeDefaults(),
-            bundleShortVersion: nil
+            bundleShortVersion: nil,
         )
         let output = try await useCase.execute(()).get()
         #expect(output == .notUpdate)
@@ -31,7 +31,7 @@ struct CheckVersionUseCaseTests {
     @Test func 初回起動の場合_notUpdateを返す() async throws {
         let useCase = CheckVersionUseCase(
             userDefaults: makeDefaults(),
-            bundleShortVersion: "1.0.0"
+            bundleShortVersion: "1.0.0",
         )
         let output = try await useCase.execute(()).get()
         #expect(output == .notUpdate)
@@ -42,7 +42,7 @@ struct CheckVersionUseCaseTests {
         defaults.set("1.0.0", forKey: "current_version")
         let useCase = CheckVersionUseCase(
             userDefaults: defaults,
-            bundleShortVersion: "1.0.0"
+            bundleShortVersion: "1.0.0",
         )
         let output = try await useCase.execute(()).get()
         #expect(output == .notUpdate)
@@ -53,7 +53,7 @@ struct CheckVersionUseCaseTests {
         defaults.set("1.0.0", forKey: "current_version")
         let useCase = CheckVersionUseCase(
             userDefaults: defaults,
-            bundleShortVersion: "2.0.0"
+            bundleShortVersion: "2.0.0",
         )
         let output = try await useCase.execute(()).get()
         #expect(output == .showVersionInformation)
@@ -64,18 +64,18 @@ struct CheckVersionUseCaseTests {
         defaults.set("2.0.0", forKey: "current_version")
         let useCase = CheckVersionUseCase(
             userDefaults: defaults,
-            bundleShortVersion: "1.0.0"
+            bundleShortVersion: "1.0.0",
         )
         let output = try await useCase.execute(()).get()
         #expect(output == .notUpdate)
     }
 
-    @Test func バージョンアップ後_UserDefaultsのバージョンが更新される() async throws {
+    @Test func バージョンアップ後_UserDefaultsのバージョンが更新される() async {
         let defaults = makeDefaults()
         defaults.set("1.0.0", forKey: "current_version")
         let useCase = CheckVersionUseCase(
             userDefaults: defaults,
-            bundleShortVersion: "2.0.0"
+            bundleShortVersion: "2.0.0",
         )
         _ = await useCase.execute(())
         #expect(defaults.string(forKey: "current_version") == "2.0.0")
@@ -87,7 +87,7 @@ struct CheckVersionUseCaseTests {
         let useCase = CheckVersionUseCase(
             userDefaults: defaults,
             userDefaultsKey: "my_version_key",
-            bundleShortVersion: "2.0.0"
+            bundleShortVersion: "2.0.0",
         )
         let output = try await useCase.execute(()).get()
         #expect(output == .showVersionInformation)

@@ -16,8 +16,8 @@ public enum FeedbackTopic: CaseIterable {
     case other
 }
 
-extension FeedbackTopic {
-    public var localizedName: String {
+public extension FeedbackTopic {
+    var localizedName: String {
         switch self {
         case .featureRequest: LocalizedString.topicFeatureRequest
         case .bugReport: LocalizedString.topicBugReport

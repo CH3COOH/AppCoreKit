@@ -8,20 +8,20 @@
 //
 
 #if os(iOS)
-import SafariServices
-import SwiftUI
+    import SafariServices
+    import SwiftUI
 
-struct SafariView: UIViewControllerRepresentable {
-    let url: URL
+    struct SafariView: UIViewControllerRepresentable {
+        let url: URL
 
-    func makeUIViewController(context: Context) -> SFSafariViewController {
-        let vc = SFSafariViewController(url: url)
-        if #unavailable(iOS 26) {
-            vc.preferredControlTintColor = UIColor(Color.accentColor)
+        func makeUIViewController(context _: Context) -> SFSafariViewController {
+            let vc = SFSafariViewController(url: url)
+            if #unavailable(iOS 26) {
+                vc.preferredControlTintColor = UIColor(Color.accentColor)
+            }
+            return vc
         }
-        return vc
-    }
 
-    func updateUIViewController(_ uiViewController: SFSafariViewController, context: Context) {}
-}
+        func updateUIViewController(_: SFSafariViewController, context _: Context) {}
+    }
 #endif
