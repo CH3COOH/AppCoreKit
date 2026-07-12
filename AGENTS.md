@@ -21,6 +21,7 @@ AppCoreKit/
 │       ├── Launch/           # アプリ起動時の共通 UseCase
 │       ├── Network/          # ネットワーク関連 UseCase
 │       ├── Store/            # 課金関連 UseCase（RevenueCat）
+│       ├── Review/           # アプリ評価依頼（ReviewRequestManager）
 │       ├── Device/           # デバイス情報ユーティリティ（iOS のみ）
 │       └── Views/            # 共通 SwiftUI View
 │           ├── Browser/      # SafariView
