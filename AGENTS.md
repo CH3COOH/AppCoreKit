@@ -22,11 +22,13 @@ AppCoreKit/
 │       ├── Network/          # ネットワーク関連 UseCase
 │       ├── Store/            # 課金関連 UseCase（RevenueCat）
 │       ├── Review/           # アプリ評価依頼（ReviewRequestManager）
+│       ├── Logging/          # ログ出力（CustomLogger）
 │       ├── Device/           # デバイス情報ユーティリティ（iOS のみ）
+│       ├── ViewModel/        # BaseViewModel（画面 ViewModel の基底クラス）
 │       └── Views/            # 共通 SwiftUI View
 │           ├── Browser/      # SafariView
 │           ├── Buttons/      # AccentCapsuleButton, TextAccentButton
-│           ├── Common/       # LoadingView, ContentUnavailableViewCompat, SafeAreaBarCompat
+│           ├── Common/       # LoadingView, ContentUnavailableViewCompat, SafeAreaBarCompat, AlertDialogItem, UIViewController+SwiftUI
 │           ├── Feedback/     # FeedbackScreen（iOS のみ）
 │           ├── Launch/       # UpdateRequirementScreen
 │           ├── Settings/     # SettingsAboutScreen, SettingsLinkRowView, SettingsListItemView
