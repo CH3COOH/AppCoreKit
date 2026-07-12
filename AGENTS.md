@@ -22,6 +22,7 @@ AppCoreKit/
 │       ├── Network/          # ネットワーク関連 UseCase
 │       ├── Store/            # 課金関連 UseCase（RevenueCat）
 │       ├── Review/           # アプリ評価依頼（ReviewRequestManager）
+│       ├── Logging/          # ログ出力（CustomLogger）
 │       ├── Device/           # デバイス情報ユーティリティ（iOS のみ）
 │       └── Views/            # 共通 SwiftUI View
 │           ├── Browser/      # SafariView
