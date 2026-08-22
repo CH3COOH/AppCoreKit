@@ -15,11 +15,19 @@ import RevenueCat
 /// RevenueCat の entitlement を確認し、課金状態を返す。
 /// 状態管理（AppState / PremiumManager への反映）は呼び出し元が `UseCaseResult` を見て行う。
 ///
+/// 課金情報の取得に失敗した場合は `.failure` を返す。
+/// `.free` は「本当に非課金である」ことだけを表すため、
+/// 呼び出し元は `.failure` のときに課金状態をダウングレードしてはならない。
+///
 /// ## 使用例
 /// ```swift
 /// let result = await CheckPurchaseUseCase().execute(.init(entitlementKey: "premium"))
-/// if case .success(.premium(let date)) = result {
-///     await AppState.shared.setSubscriptionExpireDate(date: date)
+/// switch result {
+/// case let .success(state):
+///     purchaseState.apply(state)
+/// case .failure:
+///     // 取得に失敗しただけなので、現在の課金状態を維持する
+///     break
 /// }
 /// ```
 public final class CheckPurchaseUseCase: UseCaseProtocol {
@@ -42,14 +50,24 @@ public final class CheckPurchaseUseCase: UseCaseProtocol {
         case free
     }
 
-    public init() {}
+    private let fetchCustomerInfo: @Sendable () async throws -> CustomerInfo
+
+    /// - Parameter fetchCustomerInfo: 課金情報の取得処理（テスト時に差し替える）
+    public init(
+        fetchCustomerInfo: @escaping @Sendable () async throws -> CustomerInfo = {
+            try await Purchases.shared.customerInfo()
+        },
+    ) {
+        self.fetchCustomerInfo = fetchCustomerInfo
+    }
 
     public func execute(_ input: Input) async -> Result<Output, any Error> {
         do {
-            let customerInfo = try await Purchases.shared.customerInfo()
+            let customerInfo = try await fetchCustomerInfo()
             return .success(resolveResult(from: customerInfo, entitlementKey: input.entitlementKey))
         } catch {
-            return .success(.free)
+            // 取得できなかっただけで非課金とは限らないため、エラーをそのまま返す
+            return .failure(error)
         }
     }
 

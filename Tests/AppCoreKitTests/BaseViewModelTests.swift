@@ -24,6 +24,8 @@ private struct StubUseCase: UseCaseProtocol {
     }
 }
 
+/// フックが static のため、並列実行すると他のテストの resetHooks() に差し替えられてしまう
+@Suite(.serialized)
 @MainActor
 struct BaseViewModelTests {
     private func resetHooks() {
