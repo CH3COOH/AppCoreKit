@@ -112,7 +112,7 @@ public final class CheckPurchaseUseCase: UseCaseProtocol {
         .callIsActive,
     ]
 
-    private let fetchCustomerInfo: @Sendable () async throws -> CustomerInfo
+    private let customerInfoProvider: @Sendable () async throws -> CustomerInfo
 
     /// - Parameter fetchCustomerInfo: 課金情報の取得処理（テスト時に差し替える）
     public init(
@@ -120,26 +120,33 @@ public final class CheckPurchaseUseCase: UseCaseProtocol {
             try await Purchases.shared.customerInfo()
         },
     ) {
-        self.fetchCustomerInfo = fetchCustomerInfo
+        customerInfoProvider = fetchCustomerInfo
     }
 
     public func execute(_ input: Input) async -> Result<Output, any Error> {
+        await fetchCustomerInfo(input: input)
+    }
+
+    /// 1. 課金情報を取得する
+    private func fetchCustomerInfo(input: Input) async -> Result<Output, any Error> {
         do {
-            let customerInfo = try await fetchCustomerInfo()
-            return .success(resolveResult(from: customerInfo, entitlementKey: input.entitlementKey))
+            let customerInfo = try await customerInfoProvider()
+            return resolveEntitlement(input: input, customerInfo: customerInfo)
         } catch {
             // 取得できなかっただけで非課金とは限らないため、種別を判定して返す
             return .failure(Self.classify(error))
         }
     }
 
-    private func resolveResult(from customerInfo: CustomerInfo, entitlementKey: String) -> UseCaseResult {
-        guard let entitlement = customerInfo.entitlements.all[entitlementKey],
+    /// 2. entitlement の有効・無効から課金状態を判定する
+    private func resolveEntitlement(input: Input, customerInfo: CustomerInfo) -> Result<Output, any Error> {
+        guard let entitlement = customerInfo.entitlements.all[input.entitlementKey],
               entitlement.isActive
         else {
-            return .free
+            return .success(.free)
         }
-        return .premium(expireDate: entitlement.expirationDate)
+        // 買い切りプランには有効期限がないため expireDate は nil になる
+        return .success(.premium(expireDate: entitlement.expirationDate))
     }
 
     /// エラーを種別ごとに分類する
