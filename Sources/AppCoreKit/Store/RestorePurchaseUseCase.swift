@@ -15,8 +15,10 @@ import RevenueCat
 /// RevenueCat の `restorePurchases()` を呼び出し、entitlement の有無で結果を返す。
 /// 状態管理（AppState / PremiumManager への反映）は呼び出し元が `UseCaseResult` を見て行う。
 ///
-/// `CheckPurchaseUseCase` との違い: ネットワークエラーなどの失敗は `.failure` で返す。
-/// ユーザー操作を起点にしているため、エラーを UI に伝える必要があるため。
+/// `CheckPurchaseUseCase` との違い: ユーザー操作を起点にしているため、
+/// 復元できる購入が見つからなかった場合は `.notFound` を返し、UI で明示する必要がある。
+/// なお失敗を `.failure` で返す点は `CheckPurchaseUseCase` と同じだが、
+/// こちらはエラー種別の分類をおこなわない。
 ///
 /// ## 使用例
 /// ```swift
