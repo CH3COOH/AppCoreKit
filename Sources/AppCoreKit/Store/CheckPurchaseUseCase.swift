@@ -57,7 +57,7 @@ public final class CheckPurchaseUseCase: UseCaseProtocol {
     /// 「サーバーへ到達できなかった」のか「サーバーがエラーを返した」のかで
     /// 呼び出し元のリトライ判断が変わるため分類している。
     /// いずれの場合も課金状態は不明であり、非課金と判断してはならない。
-    public enum UseCaseError: Error {
+    public enum UseCaseError: LocalizedError {
         /// サーバーへ到達できなかった（オフライン・タイムアウト・名前解決の失敗など）
         ///
         /// 通信環境の問題であり、時間をおいて再試行すれば成功する可能性が高い。
@@ -77,6 +77,14 @@ public final class CheckPurchaseUseCase: UseCaseProtocol {
                  let .unexpected(error):
                 error
             }
+        }
+
+        /// 分類元のエラーの説明をそのまま返す
+        ///
+        /// 分類はリトライ判断のためのものであり、ユーザーに伝えるべき内容は
+        /// 分類元のエラー（RevenueCat や URLSession のエラー）が持っているため。
+        public var errorDescription: String? {
+            underlyingError.localizedDescription
         }
     }
 
@@ -174,10 +182,18 @@ public final class CheckPurchaseUseCase: UseCaseProtocol {
         return .unexpected(error)
     }
 
+    /// 辿るエラーの連鎖の上限
+    ///
+    /// 連鎖が循環していた場合に無限ループへ陥らないためのもの。
+    private static let maxUnderlyingErrorDepth = 10
+
     /// `NSUnderlyingErrorKey` を辿って最初に見つかった `URLError` のコードを返す
     private static func firstURLErrorCode(in error: any Error) -> URLError.Code? {
         var current: NSError? = error as NSError
-        while let nsError = current {
+        for _ in 0 ..< maxUnderlyingErrorDepth {
+            guard let nsError = current else {
+                return nil
+            }
             if nsError.domain == NSURLErrorDomain {
                 return URLError.Code(rawValue: nsError.code)
             }

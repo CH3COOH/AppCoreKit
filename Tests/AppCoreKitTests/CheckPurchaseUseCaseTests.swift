@@ -12,6 +12,17 @@ import Foundation
 import RevenueCat
 import Testing
 
+/// `NSUnderlyingErrorKey` が自分自身を指し続けるエラー（連鎖の循環を再現する）
+private final class SelfReferencingError: NSError, @unchecked Sendable {
+    convenience init() {
+        self.init(domain: "SelfReferencingError", code: 0, userInfo: nil)
+    }
+
+    override var userInfo: [String: Any] {
+        [NSUnderlyingErrorKey: self]
+    }
+}
+
 struct CheckPurchaseUseCaseTests {
     private struct DummyError: Error {}
 
@@ -132,11 +143,40 @@ struct CheckPurchaseUseCaseTests {
         #expect(underlyingError is DummyError)
     }
 
+    @Test func 深い連鎖のURLError_サーバー未到達に分類される() {
+        // NSUnderlyingErrorKey を数段辿った先に URLError があるケース
+        var error: any Error = URLError(.notConnectedToInternet)
+        for _ in 0 ..< 3 {
+            error = revenueCatError(.unknownError, underlyingError: error)
+        }
+
+        guard case .networkUnreachable = CheckPurchaseUseCase.classify(error) else {
+            Issue.record("networkUnreachable を期待したが分類されなかった")
+            return
+        }
+    }
+
+    @Test func 連鎖が循環していても分類が終了する() {
+        // 自分自身を underlying error として返し続けるエラー
+        guard case .unexpected = CheckPurchaseUseCase.classify(SelfReferencingError()) else {
+            Issue.record("unexpected を期待したが別の種別に分類された")
+            return
+        }
+    }
+
     // MARK: - underlyingError
 
     @Test func underlyingErrorで分類元のエラーを取得できる() {
         let error = CheckPurchaseUseCase.classify(DummyError())
 
         #expect(error.underlyingError is DummyError)
+    }
+
+    @Test func errorDescriptionは分類元のエラーの説明を返す() {
+        let underlyingError = URLError(.notConnectedToInternet)
+        let error = CheckPurchaseUseCase.classify(underlyingError)
+
+        #expect(error.errorDescription == underlyingError.localizedDescription)
+        #expect(error.localizedDescription == underlyingError.localizedDescription)
     }
 }
