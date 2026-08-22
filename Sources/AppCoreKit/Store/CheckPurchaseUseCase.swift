@@ -157,8 +157,10 @@ public final class CheckPurchaseUseCase: UseCaseProtocol {
         return .success(.premium(expireDate: entitlement.expirationDate))
     }
 
+    // MARK: - Private
+
     /// エラーを種別ごとに分類する
-    static func classify(_ error: any Error) -> UseCaseError {
+    private static func classify(_ error: any Error) -> UseCaseError {
         let nsError = error as NSError
         if nsError.domain == ErrorCode.errorDomain,
            let errorCode = ErrorCode(rawValue: nsError.code)
