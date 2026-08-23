@@ -129,7 +129,16 @@ public final class PurchaseStateStore: ObservableObject {
         guard let verifiedAt else {
             return false
         }
-        return Date.now.timeIntervalSince(verifiedAt) < trustDuration
+
+        let elapsed = Date.now.timeIntervalSince(verifiedAt)
+        guard elapsed >= 0 else {
+            // 端末時刻を進めた状態で確認日時を書かせてから戻すと、経過時間が負になり
+            // 信頼期間が実質無期限になってしまう。未来の確認日時は信頼しない。
+            // 再確認に成功すれば verifiedAt が正しい値に戻る
+            return false
+        }
+
+        return elapsed < trustDuration
     }
 
     /// 買い切りプラン購入済みとして記録されているか

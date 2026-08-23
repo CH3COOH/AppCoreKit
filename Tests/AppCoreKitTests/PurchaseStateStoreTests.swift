@@ -192,6 +192,26 @@ struct PurchaseStateStoreTests {
         #expect(store.isPurchased == true)
     }
 
+    @Test func 確認日時が未来の場合_信頼しない() {
+        // 端末時刻を進めて確認日時を書かせてから戻した状況を想定する
+        let defaults = makeDefaults(verifiedAgo: -3600, isPremium: true)
+
+        let store = PurchaseStateStore(userDefaults: defaults)
+
+        #expect(store.isTrusted == false)
+        #expect(store.isPurchased == false)
+    }
+
+    @Test func 確認日時が未来でも_再確認できれば復帰する() {
+        let defaults = makeDefaults(verifiedAgo: -3600, isPremium: true)
+        let store = PurchaseStateStore(userDefaults: defaults)
+
+        store.apply(.premium(expireDate: nil))
+
+        #expect(store.isTrusted == true)
+        #expect(store.isPurchased == true)
+    }
+
     @Test func 信頼期間を変更できる() {
         let defaults = makeDefaults(verifiedAgo: 3600, isPremium: true)
 
