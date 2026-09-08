@@ -48,11 +48,15 @@ public final class CheckVersionUseCase: UseCaseProtocol, @unchecked Sendable {
             return .success(.notUpdate)
         }
 
-        let compared = version.compare(beforeVersion)
+        // 数値として比較する。文字列比較では 2.9.10 が 2.9.9 より小さいと判定されてしまう
+        let compared = version.compare(beforeVersion, options: .numeric)
         switch compared {
         case .orderedSame:
             return .success(.notUpdate)
         case .orderedAscending:
+            // ダウングレードでも記録は実行中のバージョンへ合わせる。
+            // 記録を進めないと、比較に失敗した端末が古い値のまま固定されてしまう
+            userDefaults.set(version, forKey: userDefaultsKey)
             return .success(.notUpdate)
         case .orderedDescending:
             userDefaults.set(version, forKey: userDefaultsKey)
