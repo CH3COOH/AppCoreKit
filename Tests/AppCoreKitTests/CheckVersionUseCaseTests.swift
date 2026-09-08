@@ -37,6 +37,27 @@ struct CheckVersionUseCaseTests {
         #expect(output == .notUpdate)
     }
 
+    @Test func 初回起動の場合_UserDefaultsにバージョンが記録される() async {
+        let defaults = makeDefaults()
+        let useCase = CheckVersionUseCase(
+            userDefaults: defaults,
+            bundleShortVersion: "1.0.0",
+        )
+        _ = await useCase.execute(())
+        #expect(defaults.string(forKey: "current_version") == "1.0.0")
+    }
+
+    @Test func bundleVersionが取得できない場合_UserDefaultsを書き換えない() async {
+        let defaults = makeDefaults()
+        defaults.set("1.0.0", forKey: "current_version")
+        let useCase = CheckVersionUseCase(
+            userDefaults: defaults,
+            bundleShortVersion: nil,
+        )
+        _ = await useCase.execute(())
+        #expect(defaults.string(forKey: "current_version") == "1.0.0")
+    }
+
     @Test func 同一バージョンの場合_notUpdateを返す() async throws {
         let defaults = makeDefaults()
         defaults.set("1.0.0", forKey: "current_version")
@@ -115,6 +136,24 @@ struct CheckVersionUseCaseTests {
         )
         let output = try await useCase.execute(()).get()
         #expect(output == .notUpdate)
+        #expect(defaults.string(forKey: "current_version") == "2.9.9")
+    }
+
+    @Test func 記録が古いまま固定されない() async throws {
+        // 比較に失敗して記録が進まないと、以降どのバージョンに上げても
+        // showVersionInformation を返せなくなる（#14）
+        let defaults = makeDefaults()
+        defaults.set("2.9.9", forKey: "current_version")
+
+        for version in ["2.9.10", "2.9.11", "2.9.17", "3.0.0"] {
+            let useCase = CheckVersionUseCase(
+                userDefaults: defaults,
+                bundleShortVersion: version,
+            )
+            let output = try await useCase.execute(()).get()
+            #expect(output == .showVersionInformation, "\(version) がアップデートとして扱われていない")
+            #expect(defaults.string(forKey: "current_version") == version)
+        }
     }
 
     @Test func バージョンアップ後_UserDefaultsのバージョンが更新される() async {
