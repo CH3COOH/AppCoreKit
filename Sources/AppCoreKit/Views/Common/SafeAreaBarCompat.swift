@@ -17,7 +17,10 @@ public extension View {
         @ViewBuilder content: () -> some View,
     ) -> some View {
         if #available(iOS 26.0, macOS 26.0, *) {
-            safeAreaBar(edge: edge, content: content)
+            // iOS 27 では safeAreaBar の scroll edge effect の既定が hard 相当になり、
+            // 境界線がくっきり出るため、iOS 26 と同じなだらかな見た目に揃える
+            scrollEdgeEffectStyle(.soft, for: edge == .top ? .top : .bottom)
+                .safeAreaBar(edge: edge, content: content)
         } else {
             if showsDivider {
                 safeAreaInset(edge: .bottom) {
