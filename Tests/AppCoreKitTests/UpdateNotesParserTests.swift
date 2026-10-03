@@ -7,7 +7,7 @@
 //  https://opensource.org/licenses/mit-license.php
 //
 
-@testable import AppCoreKit
+@testable import AppCoreKitCore
 import Testing
 
 struct UpdateNotesParserTests {

@@ -8,6 +8,7 @@
 //
 
 import Foundation
+import AppCoreKitCore
 import RevenueCat
 
 /// 課金状態のチェック
