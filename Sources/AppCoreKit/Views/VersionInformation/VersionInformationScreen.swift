@@ -58,13 +58,9 @@ public struct VersionInformationScreen: View {
                     Divider()
 
                     ScrollView {
-                        Text(updateText)
-                            .font(.system(size: 13, weight: .regular))
-                            .multilineTextAlignment(.leading)
-                            .lineSpacing(1.2)
+                        UpdateNotesView(text: updateText)
                             .padding(.horizontal, 24)
-                            .padding(.top, 16)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.vertical, 16)
                     }
                 }
             } else {
