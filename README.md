@@ -59,9 +59,10 @@ func execute(_ input: Input) async -> Result<Output, any Error>
 
 | View | Description |
 |------|-------------|
-| `VersionInformationScreen` | What's new screen shown after an update; footer buttons (subscribe/close) are optional |
+| `VersionInformationScreen` | What's new screen shown after an update; renders the notes with `UpdateNotesView`; footer buttons (subscribe/close) are optional |
 | `VersionInformationHeaderView` | Header component for version information |
 | `VersionInformationFooterView` | Footer component with action buttons |
+| `UpdateNotesView` | Renders update notes text: `#` headings, `■` sections, `・` / `- ` / `* ` bullets, and inline Markdown (bold, links) |
 
 #### Launch
 

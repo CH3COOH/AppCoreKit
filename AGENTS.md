@@ -32,7 +32,7 @@ AppCoreKit/
 │           ├── Feedback/     # FeedbackScreen（iOS のみ）
 │           ├── Launch/       # UpdateRequirementScreen
 │           ├── Settings/     # SettingsAboutScreen, SettingsLinkRowView, SettingsListItemView
-│           └── VersionInformation/ # VersionInformationScreen
+│           └── VersionInformation/ # VersionInformationScreen, UpdateNotesView(更新内容の Markdown 表示)
 └── Tests/
     └── AppCoreKitTests/      # 各モジュールのユニットテスト
 ```
