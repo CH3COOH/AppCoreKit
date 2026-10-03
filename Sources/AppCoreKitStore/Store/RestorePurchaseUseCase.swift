@@ -8,6 +8,7 @@
 //
 
 import Foundation
+import AppCoreKitCore
 import RevenueCat
 
 /// 購入の復元

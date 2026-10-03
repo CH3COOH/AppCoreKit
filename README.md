@@ -15,11 +15,22 @@ Add the following to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/CH3COOH/AppCoreKit", from: "1.3.0")
+    .package(url: "https://github.com/CH3COOH/AppCoreKit", from: "1.5.0")
 ]
 ```
 
 Or add via Xcode: **File > Add Package Dependencies** and enter the repository URL.
+
+### Choosing a product
+
+| Product | Contents | External dependencies |
+|---------|----------|-----------------------|
+| `AppCoreKit` | Everything below (re-exports Core, Store, and Feedback) | RevenueCat, DeviceKit |
+| `AppCoreKitCore` | Use cases, SwiftUI views, logger, review request, etc. | None |
+| `AppCoreKitStore` | Purchase use cases (`CheckPurchaseUseCase`, `RestorePurchaseUseCase`, `PurchaseStateStore`) | RevenueCat |
+| `AppCoreKitFeedback` | `FeedbackScreen` (iOS only) | DeviceKit (iOS only) |
+
+Link `AppCoreKit` and `import AppCoreKit` to use everything. If your app uses neither purchases nor the feedback screen, link `AppCoreKitCore` instead and `import AppCoreKitCore` so that RevenueCat and DeviceKit are not built or linked into the app.
 
 ## Features
 

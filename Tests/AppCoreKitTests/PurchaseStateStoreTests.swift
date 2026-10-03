@@ -7,7 +7,8 @@
 //  https://opensource.org/licenses/mit-license.php
 //
 
-@testable import AppCoreKit
+@testable import AppCoreKitCore
+@testable import AppCoreKitStore
 import Foundation
 import Testing
 

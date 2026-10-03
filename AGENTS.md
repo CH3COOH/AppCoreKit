@@ -10,31 +10,51 @@
 - **最小iOS:** 16.0
 - **アーキテクチャ:** SPM ライブラリ（.library product）
 
+## ターゲット構成
+
+| ターゲット / product | 中身 | 外部依存 |
+|---|---|---|
+| `AppCoreKitCore` | UseCase / View / Logger など、外部依存のない共通部品 | なし |
+| `AppCoreKitStore` | 課金関連 UseCase | Core、RevenueCat |
+| `AppCoreKitFeedback` | フィードバック画面（iOS のみ） | DeviceKit（iOS のみ） |
+| `AppCoreKit` | 上の3つを `@_exported import` する全部入りの窓口 | 上の3つ |
+
+- 外部依存を Core に持ち込まない。RevenueCat を使うコードは Store、DeviceKit を使うコードは Feedback に置く
+- Feedback は Core に依存していない。Core の型を使う必要が出たら `Package.swift` の依存に `AppCoreKitCore` を追加する
+- ローカライズ文字列は、使うターゲットの `Resources/Localizable.xcstrings` に置く（`bundle: .module` はターゲットごとに別の Bundle になる）
+
 ## ディレクトリ構成
 
 ```
 AppCoreKit/
 ├── Package.swift
 ├── Sources/
-│   └── AppCoreKit/
-│       ├── UseCase/          # UseCaseProtocol など共通プロトコル
-│       ├── Launch/           # アプリ起動時の共通 UseCase
-│       ├── Network/          # ネットワーク関連 UseCase
-│       ├── Store/            # 課金関連 UseCase（RevenueCat）
-│       ├── Review/           # アプリ評価依頼（ReviewRequestManager）
-│       ├── Logging/          # ログ出力（CustomLogger）
+│   ├── AppCoreKit/
+│   │   └── AppCoreKit.swift      # Core / Store / Feedback を @_exported import する窓口
+│   ├── AppCoreKitCore/
+│   │   ├── UseCase/          # UseCaseProtocol など共通プロトコル
+│   │   ├── Launch/           # アプリ起動時の共通 UseCase
+│   │   ├── Network/          # ネットワーク関連 UseCase
+│   │   ├── Review/           # アプリ評価依頼（ReviewRequestManager）
+│   │   ├── Logging/          # ログ出力（CustomLogger）
+│   │   ├── ViewModel/        # BaseViewModel（画面 ViewModel の基底クラス）
+│   │   ├── Resources/        # Localizable.xcstrings（common.*）
+│   │   └── Views/            # 共通 SwiftUI View
+│   │       ├── Browser/      # SafariView
+│   │       ├── Buttons/      # AccentCapsuleButton, TextAccentButton
+│   │       ├── Common/       # LoadingView, ContentUnavailableViewCompat, SafeAreaBarCompat, AlertDialogItem, UIViewController+SwiftUI
+│   │       ├── Launch/       # UpdateRequirementScreen
+│   │       ├── Settings/     # SettingsAboutScreen, SettingsLinkRowView, SettingsListItemView
+│   │       └── VersionInformation/ # VersionInformationScreen, UpdateNotesView(更新内容の Markdown 表示)
+│   ├── AppCoreKitStore/
+│   │   └── Store/            # 課金関連 UseCase（RevenueCat）
+│   └── AppCoreKitFeedback/
 │       ├── Device/           # デバイス情報ユーティリティ（iOS のみ）
-│       ├── ViewModel/        # BaseViewModel（画面 ViewModel の基底クラス）
-│       └── Views/            # 共通 SwiftUI View
-│           ├── Browser/      # SafariView
-│           ├── Buttons/      # AccentCapsuleButton, TextAccentButton
-│           ├── Common/       # LoadingView, ContentUnavailableViewCompat, SafeAreaBarCompat, AlertDialogItem, UIViewController+SwiftUI
-│           ├── Feedback/     # FeedbackScreen（iOS のみ）
-│           ├── Launch/       # UpdateRequirementScreen
-│           ├── Settings/     # SettingsAboutScreen, SettingsLinkRowView, SettingsListItemView
-│           └── VersionInformation/ # VersionInformationScreen, UpdateNotesView(更新内容の Markdown 表示)
+│       ├── Resources/        # Localizable.xcstrings（feedback.*）
+│       └── Views/
+│           └── Feedback/     # FeedbackScreen（iOS のみ）
 └── Tests/
-    └── AppCoreKitTests/      # 各モジュールのユニットテスト
+    └── AppCoreKitTests/      # 各モジュールのユニットテスト（Core / Store を @testable import）
 ```
 
 ## 受け入れ条件
@@ -66,7 +86,7 @@ swift test
 
 ## 新しい UseCase を追加する際のルール
 
-1. `Sources/AppCoreKit/` の適切なサブディレクトリに配置する
+1. 外部依存に応じて `Sources/AppCoreKitCore/` / `Sources/AppCoreKitStore/` / `Sources/AppCoreKitFeedback/` の適切なサブディレクトリに配置する
 2. `UseCaseProtocol` に準拠する
 3. テスタブルにするため、外部依存（UserDefaults 等）はイニシャライザで注入する
 4. `Tests/AppCoreKitTests/` に対応するテストファイルを作成する
@@ -81,7 +101,7 @@ swift test
 
 ## 依存ライブラリ
 
-| ライブラリ | 用途 | プラットフォーム |
-|---|---|---|
-| [RevenueCat](https://github.com/RevenueCat/purchases-ios-spm) | 課金・サブスクリプション管理 | iOS / macOS |
-| [DeviceKit](https://github.com/devicekit/DeviceKit) | デバイスモデル名の人間可読な取得 | iOS のみ |
+| ライブラリ | 用途 | プラットフォーム | 使うターゲット |
+|---|---|---|---|
+| [RevenueCat](https://github.com/RevenueCat/purchases-ios-spm) | 課金・サブスクリプション管理 | iOS / macOS | `AppCoreKitStore` |
+| [DeviceKit](https://github.com/devicekit/DeviceKit) | デバイスモデル名の人間可読な取得 | iOS のみ | `AppCoreKitFeedback` |
