@@ -40,7 +40,7 @@ AppCoreKit/
 │   │   ├── ViewModel/        # BaseViewModel（画面 ViewModel の基底クラス）
 │   │   ├── Resources/        # Localizable.xcstrings（common.*）
 │   │   └── Views/            # 共通 SwiftUI View
-│   │       ├── Browser/      # SafariView
+│   │       ├── Browser/      # SafariViewPresenter(iOS 25 以前のアプリ内ブラウザ表示)
 │   │       ├── Buttons/      # AccentCapsuleButton, TextAccentButton
 │   │       ├── Common/       # LoadingView, ContentUnavailableViewCompat, SafeAreaBarCompat, AlertDialogItem, UIViewController+SwiftUI
 │   │       ├── Launch/       # UpdateRequirementScreen
