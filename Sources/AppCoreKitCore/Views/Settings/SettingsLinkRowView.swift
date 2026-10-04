@@ -14,14 +14,14 @@ struct SettingsLinkRowView: View {
     private let iconColor: Color?
     private let title: Text
     private let description: Text?
-    private let action: () -> Void
+    private let action: (() -> Void)?
 
     init(
         iconSystemName: String? = nil,
         iconColor: Color? = nil,
         title: Text,
         description: Text? = nil,
-        action: @escaping () -> Void,
+        action: (() -> Void)?,
     ) {
         self.iconSystemName = iconSystemName
         self.iconColor = iconColor
@@ -30,34 +30,45 @@ struct SettingsLinkRowView: View {
         self.action = action
     }
 
+    /// `action` が nil のときはタップできない行として、右端の矢印を出さずに表示する。
     var body: some View {
-        Button(action: action) {
-            HStack(spacing: 16) {
-                if let iconSystemName, let iconColor {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 6.5)
-                            .fill(iconColor)
-                            .frame(width: 29, height: 29)
-                        Image(systemName: iconSystemName)
-                            .font(.system(size: 17))
-                            .foregroundStyle(.white)
-                    }
+        if let action {
+            Button(action: action) {
+                content(showsChevron: true)
+            }
+        } else {
+            content(showsChevron: false)
+        }
+    }
+
+    private func content(showsChevron: Bool) -> some View {
+        HStack(spacing: 16) {
+            if let iconSystemName, let iconColor {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 6.5)
+                        .fill(iconColor)
+                        .frame(width: 29, height: 29)
+                    Image(systemName: iconSystemName)
+                        .font(.system(size: 17))
+                        .foregroundStyle(.white)
                 }
-                VStack(alignment: .leading, spacing: 2) {
-                    title
-                        .foregroundStyle(Color.primary)
-                    if let description {
-                        description
-                            .font(.system(size: 13, weight: .regular))
-                            .foregroundStyle(Color.secondary)
-                    }
+            }
+            VStack(alignment: .leading, spacing: 2) {
+                title
+                    .foregroundStyle(Color.primary)
+                if let description {
+                    description
+                        .font(.system(size: 13, weight: .regular))
+                        .foregroundStyle(Color.secondary)
                 }
-                Spacer()
+            }
+            Spacer()
+            if showsChevron {
                 Image(systemName: "chevron.right")
                     .foregroundStyle(Color.secondary)
                     .font(.system(size: 13, weight: .semibold))
             }
-            .padding(.vertical, 4)
         }
+        .padding(.vertical, 4)
     }
 }

@@ -62,7 +62,8 @@ func execute(_ input: Input) async -> Result<Output, any Error>
 
 | View | Description |
 |------|-------------|
-| `SettingsAboutScreen` | Standard about screen with app info, privacy policy, terms, and optional version history |
+| `SettingsAboutScreen` | Standard about screen with app info, privacy policy, terms, and optional version history. Extra rows (e.g. app icon designer) can follow the developer row via `credits` |
+| `SettingsAboutItem` | A row an app adds to `SettingsAboutScreen` (icon, title, optional description and link). Currently used for `credits` |
 | `SettingsLinkRowView` | Row with optional system image icon and external link |
 | `SettingsListItemView` | Simple list item row for settings |
 
