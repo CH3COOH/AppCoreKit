@@ -86,7 +86,7 @@ func execute(_ input: Input) async -> Result<Output, any Error>
 
 | View | Description |
 |------|-------------|
-| `SafariView` | In-app browser using `SFSafariViewController` |
+| `SafariViewPresenter` (internal) | Presents `SFSafariViewController` with UIKit `present` (fallback for iOS 25 and earlier) |
 | `AccentCapsuleButton` | Capsule-shaped button with accent color |
 | `TextAccentButton` | Text button with accent color |
 | `LoadingView` | Loading indicator |

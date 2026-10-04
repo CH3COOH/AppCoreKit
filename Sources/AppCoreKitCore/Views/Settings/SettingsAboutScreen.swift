@@ -27,12 +27,7 @@ public struct SettingsAboutScreen: View {
     private let versionHistoryDestination: AnyView?
     private let onAppear: (() -> Void)?
 
-    @State private var selectedURL: IdentifiableURL?
-
-    private struct IdentifiableURL: Identifiable {
-        let id = UUID()
-        let url: URL
-    }
+    @Environment(\.openURL) private var openURL
 
     public init(
         navigationTitle: String,
@@ -122,7 +117,7 @@ public struct SettingsAboutScreen: View {
                         iconColor: SettingsIconColor.info,
                         title: privacyPolicyTitle,
                     ) {
-                        selectedURL = IdentifiableURL(url: url)
+                        openInAppBrowser(url)
                     }
                 }
                 if let url = termsOfUseURL {
@@ -131,7 +126,7 @@ public struct SettingsAboutScreen: View {
                         iconColor: SettingsIconColor.info,
                         title: termsOfUseTitle,
                     ) {
-                        selectedURL = IdentifiableURL(url: url)
+                        openInAppBrowser(url)
                     }
                 }
             }
@@ -145,7 +140,7 @@ public struct SettingsAboutScreen: View {
                             title: developerTitle,
                             description: developerDescription,
                         ) {
-                            selectedURL = IdentifiableURL(url: url)
+                            openInAppBrowser(url)
                         }
                     }
                     ForEach(Array(credits.enumerated()), id: \.offset) { _, credit in
@@ -154,7 +149,7 @@ public struct SettingsAboutScreen: View {
                             iconColor: credit.iconColor,
                             title: credit.title,
                             description: credit.description,
-                            action: credit.url.map { url in { selectedURL = IdentifiableURL(url: url) } },
+                            action: credit.url.map { url in { openInAppBrowser(url) } },
                         )
                     }
                 }
@@ -163,15 +158,24 @@ public struct SettingsAboutScreen: View {
         #if os(iOS)
         .listStyle(.insetGrouped)
         .navigationBarTitleDisplayMode(.large)
-        .fullScreenCover(item: $selectedURL) { item in
-            SafariView(url: item.url)
-                .ignoresSafeArea()
-        }
         #endif
         .navigationTitle(navigationTitle)
         .onAppear {
             onAppear?()
         }
+    }
+
+    /// アプリ内ブラウザ(SFSafariViewController)で URL を開く
+    private func openInAppBrowser(_ url: URL) {
+        #if os(iOS)
+        if #available(iOS 26, *) {
+            openURL(url, prefersInApp: true)
+        } else {
+            SafariViewPresenter.present(url: url)
+        }
+        #else
+        openURL(url)
+        #endif
     }
 }
 
