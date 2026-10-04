@@ -44,7 +44,7 @@ AppCoreKit/
 │   │       ├── Buttons/      # AccentCapsuleButton, TextAccentButton
 │   │       ├── Common/       # LoadingView, ContentUnavailableViewCompat, SafeAreaBarCompat, AlertDialogItem, UIViewController+SwiftUI
 │   │       ├── Launch/       # UpdateRequirementScreen
-│   │       ├── Settings/     # SettingsAboutScreen, SettingsLinkRowView, SettingsListItemView
+│   │       ├── Settings/     # SettingsAboutScreen, SettingsAboutItem, SettingsLinkRowView, SettingsListItemView
 │   │       └── VersionInformation/ # VersionInformationScreen, UpdateNotesView(更新内容の Markdown 表示)
 │   ├── AppCoreKitStore/
 │   │   └── Store/            # 課金関連 UseCase（RevenueCat）

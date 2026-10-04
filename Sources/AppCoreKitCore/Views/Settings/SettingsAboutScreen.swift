@@ -21,6 +21,8 @@ public struct SettingsAboutScreen: View {
     private let privacyPolicyURL: URL?
     private let termsOfUseURL: URL?
     private let developerURL: URL?
+    /// 開発者の行に続けて並べる行(アプリアイコン制作など)
+    private let credits: [SettingsAboutItem]
     private let versionHistoryTitle: String?
     private let versionHistoryDestination: AnyView?
     private let onAppear: (() -> Void)?
@@ -44,6 +46,7 @@ public struct SettingsAboutScreen: View {
         privacyPolicyURL: URL? = nil,
         termsOfUseURL: URL? = nil,
         developerURL: URL? = nil,
+        credits: [SettingsAboutItem] = [],
         versionHistoryTitle: String? = nil,
         versionHistoryDestination: AnyView? = nil,
         onAppear: (() -> Void)? = nil,
@@ -59,6 +62,7 @@ public struct SettingsAboutScreen: View {
         self.privacyPolicyURL = privacyPolicyURL
         self.termsOfUseURL = termsOfUseURL
         self.developerURL = developerURL
+        self.credits = credits
         self.versionHistoryTitle = versionHistoryTitle
         self.versionHistoryDestination = versionHistoryDestination
         self.onAppear = onAppear
@@ -132,15 +136,26 @@ public struct SettingsAboutScreen: View {
                 }
             }
 
-            Section {
-                if let url = developerURL {
-                    SettingsLinkRowView(
-                        iconSystemName: "globe",
-                        iconColor: SettingsIconColor.info,
-                        title: developerTitle,
-                        description: developerDescription,
-                    ) {
-                        selectedURL = IdentifiableURL(url: url)
+            if developerURL != nil || !credits.isEmpty {
+                Section {
+                    if let url = developerURL {
+                        SettingsLinkRowView(
+                            iconSystemName: "globe",
+                            iconColor: SettingsIconColor.info,
+                            title: developerTitle,
+                            description: developerDescription,
+                        ) {
+                            selectedURL = IdentifiableURL(url: url)
+                        }
+                    }
+                    ForEach(Array(credits.enumerated()), id: \.offset) { _, credit in
+                        SettingsLinkRowView(
+                            iconSystemName: credit.iconSystemName,
+                            iconColor: credit.iconColor,
+                            title: credit.title,
+                            description: credit.description,
+                            action: credit.url.map { url in { selectedURL = IdentifiableURL(url: url) } },
+                        )
                     }
                 }
             }
@@ -173,6 +188,7 @@ public extension SettingsAboutScreen {
         privacyPolicyURL: URL? = nil,
         termsOfUseURL: URL? = nil,
         developerURL: URL? = nil,
+        credits: [SettingsAboutItem] = [],
         versionHistoryTitle: String,
         @ViewBuilder versionHistoryDestination: () -> some View,
         onAppear: (() -> Void)? = nil,
@@ -189,6 +205,7 @@ public extension SettingsAboutScreen {
             privacyPolicyURL: privacyPolicyURL,
             termsOfUseURL: termsOfUseURL,
             developerURL: developerURL,
+            credits: credits,
             versionHistoryTitle: versionHistoryTitle,
             versionHistoryDestination: AnyView(versionHistoryDestination()),
             onAppear: onAppear,
