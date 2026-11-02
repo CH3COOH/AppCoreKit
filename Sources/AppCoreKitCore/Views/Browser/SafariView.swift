@@ -17,7 +17,8 @@
     /// SwiftUI の sheet / fullScreenCover に載せると下から出るモーダルになってしまうため、
     /// 最前面の UIViewController から present して SFSafariViewController 本来の
     /// 右からスライドインする遷移で表示する。
-    /// iOS 26 以降は `OpenURLAction.callAsFunction(_:prefersInApp:)` を使うこと。
+    /// `OpenURLAction.callAsFunction(_:prefersInApp:)` は使わないこと。全画面モーダルの上では
+    /// ウィンドウから外れた root view controller から present しようとして失敗する。
     enum SafariViewPresenter {
         @MainActor
         static func present(url: URL) {
