@@ -168,13 +168,9 @@ public struct SettingsAboutScreen: View {
     /// アプリ内ブラウザ(SFSafariViewController)で URL を開く
     private func openInAppBrowser(_ url: URL) {
         #if os(iOS)
-        if #available(iOS 26, *) {
-            openURL(url, prefersInApp: true)
-        } else {
             SafariViewPresenter.present(url: url)
-        }
         #else
-        openURL(url)
+            openURL(url)
         #endif
     }
 }
